@@ -6,7 +6,7 @@ namespace BFY.Fatura.Commands
     {
         public VerifySignSMSCodeCommand(IFaturaServiceConfiguration configuration) : base(configuration)
         {
-            CommandName = "EARSIV_PORTAL_SMSSIFRE_DOGRULA";
+            CommandName = "0lhozfib5410mp";
             PageName = "RG_SMSONAY";
         }
     }

@@ -190,10 +190,9 @@ namespace BFY.Fatura
             return response;
         }
 
-        public async Task<GIBResponseModel<SMSCodeResponseModel>> VerifySignSMSCode(string smsCode, string oid)
+        public async Task<GIBResponseModel<SMSCodeResponseModel>> VerifySignSMSCode(Models.Sms.SMSCodeInputModel input)
         {
-            var data = new { SIFRE = smsCode, OID = oid };
-            var command = new VerifySignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = data };
+            var command = new VerifySignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = input };
 
             GIBResponseModel<SMSCodeResponseModel> response = await command.Dispatch();
             return response;
