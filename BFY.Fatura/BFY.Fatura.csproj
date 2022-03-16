@@ -79,6 +79,7 @@
     <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\MalHizmetTableModel.cs" />
     <Compile Include="Models\RecipientModel.cs" />
+    <Compile Include="Models\Sms\SMSCodeInputModel.cs" />
     <Compile Include="Models\Sms\SMSCodeResponseModel.cs" />
     <Compile Include="Models\User\UserModel.cs" />
     <Compile Include="Models\User\UserModelDTO.cs" />
