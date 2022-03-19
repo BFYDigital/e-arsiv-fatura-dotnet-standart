@@ -28,6 +28,13 @@ namespace BFY.Fatura
 
             _configuration.Token = loginModel.Token;
         }
+        public async Task<bool> Logout(string token)
+        {
+            var httpServices = new HttpServices<bool>(_configuration);
+            var result = await httpServices.Logout(token);
+
+            return result;
+        }
 
         public async Task<DraftInvoiceResponseModel> CreateDraftInvoice(InvoiceDetailsModel invoiceDetails)
         {

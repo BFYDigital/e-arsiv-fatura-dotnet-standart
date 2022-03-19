@@ -8,5 +8,6 @@ namespace BFY.Fatura.Services
         Task<T> DispatchCommand(string command, string pageName, object data);
         Task<T> DispatchCommand(string command, string pageName);
         Task<T> Login();
+        Task<T> Logout(string token);
     }
 }

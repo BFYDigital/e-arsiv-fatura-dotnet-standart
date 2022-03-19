@@ -59,6 +59,40 @@ namespace BFY.Fatura.Services
             throw new FailedApiRequestException("Erişim token alınamıyor.");
         }
 
+        public async Task<T> Logout(string token)
+        {
+            try
+            {
+                using (HttpClient client = HttpClientFactory.Create())
+                {
+                    string url = $"{Configuration.BaseUrl}/earsiv-services/assos-login";
+                    string referrer = $"{Configuration.BaseUrl}/intragiris.html";
+
+                    // set post fields
+                    string serviceType = "logout";
+                    var postFields = new FormUrlEncodedContent(new[]
+                    {
+                    new KeyValuePair<string, string>("assoscmd", serviceType),
+                    new KeyValuePair<string, string>("rtype", "json"),
+                    new KeyValuePair<string, string>("token", token),
+                });
+
+                    HttpResponseMessage response = await client
+                        .PostAsync(url, postFields)
+                        .ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+
+                    return JsonConvert.DeserializeObject<T>(true.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
+            return JsonConvert.DeserializeObject<T>(false.ToString()); ;
+        }
+
         public async Task<T> DispatchCommand(string command, string pageName)
         {
             return await DispatchCommand(command, pageName, null, false);
