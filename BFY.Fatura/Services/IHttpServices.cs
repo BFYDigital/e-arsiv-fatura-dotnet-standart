@@ -4,10 +4,10 @@ namespace BFY.Fatura.Services
 {
     public interface IHttpServices<T>
     {
-        Task<T> DispatchCommand(string command, string pageName, object data, bool encodeUrl);
-        Task<T> DispatchCommand(string command, string pageName, object data);
-        Task<T> DispatchCommand(string command, string pageName);
+        T DispatchCommand(string command, string pageName, object data, bool encodeUrl);
+        T DispatchCommand(string command, string pageName, object data);
+        T DispatchCommand(string command, string pageName);
         Task<T> Login();
-        Task<T> Logout(string token);
+        Task<bool> Logout(string token);
     }
 }

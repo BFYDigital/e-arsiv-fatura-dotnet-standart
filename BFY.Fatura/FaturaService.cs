@@ -21,22 +21,22 @@ namespace BFY.Fatura
             // GetToken();
         }
 
-        public async Task GetToken()
+        public void GetToken()
         {
             var httpServices = new HttpServices<LoginModel>(_configuration);
-            LoginModel loginModel = await httpServices.Login();
+            LoginModel loginModel = httpServices.Login().GetAwaiter().GetResult();
 
             _configuration.Token = loginModel.Token;
         }
-        public async Task<bool> Logout(string token)
+        public bool Logout(string token)
         {
             var httpServices = new HttpServices<bool>(_configuration);
-            var result = await httpServices.Logout(token);
+            var result = httpServices.Logout(token).GetAwaiter().GetResult();
 
             return result;
         }
 
-        public async Task<DraftInvoiceResponseModel> CreateDraftInvoice(InvoiceDetailsModel invoiceDetails)
+        public DraftInvoiceResponseModel CreateDraftInvoice(InvoiceDetailsModel invoiceDetails)
         {
             var data = new DraftInvoiceModel()
             {
@@ -63,19 +63,19 @@ namespace BFY.Fatura
 
             var command = new CreateDraftInvoiceCommand<DraftInvoiceResponseModel>(_configuration) { Data = data };
 
-            DraftInvoiceResponseModel response = await command.Dispatch();
+            DraftInvoiceResponseModel response = command.Dispatch();
             response.date = data.faturaTarihi;
             response.uuid = data.faturaUuid;
 
             return response;
         }
 
-        public async Task<FoundDraftInvoiceResponseModel> GetAllInvoicesByDateRange(DateTime start, DateTime end)
+        public FoundDraftInvoiceResponseModel GetAllInvoicesByDateRange(DateTime start, DateTime end)
         {
-            return await GetAllInvoicesByDateRange(start.ToString(DATE_FORMAT).Replace(".", "/"), end.ToString(DATE_FORMAT).Replace(".", "/"));
+            return GetAllInvoicesByDateRange(start.ToString(DATE_FORMAT).Replace(".", "/"), end.ToString(DATE_FORMAT).Replace(".", "/"));
         }
 
-        public async Task<FoundDraftInvoiceResponseModel> GetAllInvoicesByDateRange(string start, string end)
+        public FoundDraftInvoiceResponseModel GetAllInvoicesByDateRange(string start, string end)
         {
             // InvoicesByDateRangeCommand
             var command = new InvoicesByDateRangeCommand<FoundDraftInvoiceResponseModel>(_configuration)
@@ -83,18 +83,18 @@ namespace BFY.Fatura
                 Data = new { baslangic = start, bitis = end, hangiTip = "5000/30000" }
             };
 
-            FoundDraftInvoiceResponseModel response = await command.Dispatch();
+            FoundDraftInvoiceResponseModel response = command.Dispatch();
             return response;
         }
 
-        public async Task<FoundDraftInvoiceModel> FindDraftInvoice(DateTime date, string uuid)
+        public FoundDraftInvoiceModel FindDraftInvoice(DateTime date, string uuid)
         {
-            return await FindDraftInvoice(date.ToString(DATE_FORMAT), uuid);
+            return FindDraftInvoice(date.ToString(DATE_FORMAT), uuid);
         }
 
-        public async Task<FoundDraftInvoiceModel> FindDraftInvoice(string date, string uuid)
+        public FoundDraftInvoiceModel FindDraftInvoice(string date, string uuid)
         {
-            var invoices = await GetAllInvoicesByDateRange(date, date);
+            var invoices = GetAllInvoicesByDateRange(date, date);
             for (int i = 0; i < invoices.data.Count; i++)
             {
                 if (invoices.data[i].ettn == uuid)
@@ -105,30 +105,30 @@ namespace BFY.Fatura
             return null;
         }
 
-        public async Task<SignDraftInvoiceModel> SignDraftInvoice(FoundDraftInvoiceModel invoice)
+        public SignDraftInvoiceModel SignDraftInvoice(FoundDraftInvoiceModel invoice)
         {
             var command = new SignDraftInvoiceCommand<SignDraftInvoiceModel>(_configuration)
             {
                 Data = new { imzalanacaklar = invoice }
             };
 
-            SignDraftInvoiceModel signedInvoice = await command.Dispatch();
+            SignDraftInvoiceModel signedInvoice = command.Dispatch();
             return signedInvoice;
         }
 
-        public async Task<GIBResponseModel<string>> GetInvoiceHTML(string uuid)
+        public GIBResponseModel<string> GetInvoiceHTML(string uuid)
         {
-            return await GetInvoiceHTML(uuid, true);
+            return GetInvoiceHTML(uuid, true);
         }
 
-        public async Task<GIBResponseModel<string>> GetInvoiceHTML(string uuid, bool signed)
+        public GIBResponseModel<string> GetInvoiceHTML(string uuid, bool signed)
         {
             var command = new GetInvoiceHTMLCommand<GIBResponseModel<string>>(_configuration)
             {
                 Data = new { ettn = uuid, onayDurumu = signed ? "Onaylandı" : "Onaylanmadı" }
             };
 
-            GIBResponseModel<string> html = await command.Dispatch();
+            GIBResponseModel<string> html = command.Dispatch();
             return html;
         }
 
@@ -138,17 +138,17 @@ namespace BFY.Fatura
             return $"{_configuration.BaseUrl}/earsiv-services/download?token={_configuration.Token}&ettn={uuid}&belgeTip=FATURA&onayDurumu={signStatus}&cmd=downloadResource";
         }
 
-        public async Task<CreatedInvoiceModel> CreateInvoice(InvoiceDetailsModel invoiceDetails)
+        public CreatedInvoiceModel CreateInvoice(InvoiceDetailsModel invoiceDetails)
         {
-            return await CreateInvoice(invoiceDetails, true);
+            return CreateInvoice(invoiceDetails, true);
         }
 
-        public async Task<CreatedInvoiceModel> CreateInvoice(InvoiceDetailsModel invoiceDetails, bool signInvoice)
+        public CreatedInvoiceModel CreateInvoice(InvoiceDetailsModel invoiceDetails, bool signInvoice)
         {
-            DraftInvoiceResponseModel draftInvoice = await CreateDraftInvoice(invoiceDetails);
-            FoundDraftInvoiceModel invoice = await FindDraftInvoice(draftInvoice.date, draftInvoice.uuid);
+            DraftInvoiceResponseModel draftInvoice = CreateDraftInvoice(invoiceDetails);
+            FoundDraftInvoiceModel invoice = FindDraftInvoice(draftInvoice.date, draftInvoice.uuid);
 
-            if (signInvoice) { await SignDraftInvoice(invoice); }
+            if (signInvoice) { SignDraftInvoice(invoice); }
 
             return new CreatedInvoiceModel()
             {
@@ -157,19 +157,19 @@ namespace BFY.Fatura
             };
         }
 
-        public async Task<string> CreateInvoiceAndGetDownloadURL(InvoiceDetailsModel invoiceDetails, bool signInvoice)
+        public string CreateInvoiceAndGetDownloadURL(InvoiceDetailsModel invoiceDetails, bool signInvoice)
         {
-            CreatedInvoiceModel invoice = await CreateInvoice(invoiceDetails, signInvoice);
+            CreatedInvoiceModel invoice = CreateInvoice(invoiceDetails, signInvoice);
             return GetDownloadURL(invoice.uuid, invoice.signed);
         }
 
-        public async Task<GIBResponseModel<string>> CreateInvoiceAndGetHTML(InvoiceDetailsModel invoiceDetails, bool signInvoice)
+        public GIBResponseModel<string> CreateInvoiceAndGetHTML(InvoiceDetailsModel invoiceDetails, bool signInvoice)
         {
-            CreatedInvoiceModel invoice = await CreateInvoice(invoiceDetails, signInvoice);
-            return await GetInvoiceHTML(invoice.uuid, invoice.signed);
+            CreatedInvoiceModel invoice = CreateInvoice(invoiceDetails, signInvoice);
+            return GetInvoiceHTML(invoice.uuid, invoice.signed);
         }
 
-        public async Task<GIBResponseModel<string>> CancelDraftInvoice(FoundDraftInvoiceModel invoice, string reason)
+        public GIBResponseModel<string> CancelDraftInvoice(FoundDraftInvoiceModel invoice, string reason)
         {
             // todo: determine the proper response type
             var command = new CancelDraftInvoiceCommand<GIBResponseModel<string>>(_configuration)
@@ -177,23 +177,23 @@ namespace BFY.Fatura
                 Data = new { silinecekler = invoice, aciklama = reason }
             };
 
-            return await command.Dispatch();
+            return command.Dispatch();
         }
 
-        public async Task<GIBResponseModel<List<RecipientModel>>> GetRecipientDataByTaxIDOrTRID(long taxId)
+        public GIBResponseModel<List<RecipientModel>> GetRecipientDataByTaxIDOrTRID(long taxId)
         {
             var data = new { vknTcknn = taxId };
             var command = new GetRecipientDataByIDCommand<GIBResponseModel<List<RecipientModel>>>(_configuration) { Data = data };
 
-            return await command.Dispatch();
+            return command.Dispatch();
         }
 
-        public async Task<GIBResponseModel<SMSCodeResponseModel>> SendSignSMSCode(string phone)
+        public GIBResponseModel<SMSCodeResponseModel> SendSignSMSCode(string phone)
         {
             var data = new { CEPTEL = phone, KCEPTEL = false, TIP = string.Empty };
             var command = new SendSignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = data };
 
-            GIBResponseModel<SMSCodeResponseModel> response = await command.Dispatch();
+            GIBResponseModel<SMSCodeResponseModel> response = command.Dispatch();
             return response;
         }
 
@@ -201,22 +201,22 @@ namespace BFY.Fatura
         {
             var command = new VerifySignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = input };
 
-            GIBResponseModel<SMSCodeResponseModel> response = await command.Dispatch();
+            GIBResponseModel<SMSCodeResponseModel> response = command.Dispatch();
             return response;
         }
 
-        public async Task<UserModel> GetUserData()
+        public UserModel GetUserData()
         {
             var command = new GetUserDataCommand<UserModelDTO>(_configuration) { Data = new { } };
-            UserModelDTO response = await command.Dispatch();
+            UserModelDTO response = command.Dispatch();
 
             return new UserModel(response);
         }
 
-        public async Task<UserModel> UpdateUserData(UserModel user)
+        public UserModel UpdateUserData(UserModel user)
         {
             var command = new UpdateUserDataCommand<UserModelDTO>(_configuration) { Data = user };
-            UserModelDTO response = await command.Dispatch();
+            UserModelDTO response = command.Dispatch();
 
             return new UserModel(response);
         }

@@ -59,7 +59,7 @@ namespace BFY.Fatura.Services
             throw new FailedApiRequestException("Erişim token alınamıyor.");
         }
 
-        public async Task<T> Logout(string token)
+        public async Task<bool> Logout(string token)
         {
             try
             {
@@ -82,28 +82,28 @@ namespace BFY.Fatura.Services
                         .ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
 
-                    return JsonConvert.DeserializeObject<T>(true.ToString());
+                    return true;
                 }
             }
             catch (Exception ex)
             {
 
             }
-            
-            return JsonConvert.DeserializeObject<T>(false.ToString()); ;
+
+            return false;
         }
 
-        public async Task<T> DispatchCommand(string command, string pageName)
+        public T DispatchCommand(string command, string pageName)
         {
-            return await DispatchCommand(command, pageName, null, false);
+            return DispatchCommand(command, pageName, null, false);
         }
 
-        public async Task<T> DispatchCommand(string command, string pageName, object data)
+        public T DispatchCommand(string command, string pageName, object data)
         {
-            return await DispatchCommand(command, pageName, data, false);
+            return DispatchCommand(command, pageName, data, false);
         }
 
-        public async Task<T> DispatchCommand(string command, string pageName, object data, bool encodeUrl)
+        public T DispatchCommand(string command, string pageName, object data, bool encodeUrl)
         {
             if (string.IsNullOrEmpty(Configuration.Token))
                 throw new EmptyTokenException("token not provided");
@@ -132,8 +132,8 @@ namespace BFY.Fatura.Services
                 }
 
                 var postFields = new FormUrlEncodedContent(fields);
-                var response = await client.PostAsync(url, postFields);
-                var responseStr = await response.Content.ReadAsStringAsync();
+                var response = client.PostAsync(url, postFields).GetAwaiter().GetResult();
+                var responseStr = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                 return JsonConvert.DeserializeObject<T>(responseStr);
             }

@@ -13,7 +13,7 @@ namespace BFY.Fatura.Test
             configuration.Password = "1";
 
             FaturaService faturaService = new FaturaService(configuration);
-            faturaService.GetToken().Wait();
+            faturaService.GetToken();
 
             Assert.NotNull(configuration.Token);
         }

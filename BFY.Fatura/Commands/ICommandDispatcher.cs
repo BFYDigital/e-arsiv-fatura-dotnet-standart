@@ -8,6 +8,6 @@ namespace BFY.Fatura.Commands
         string PageName { get; }
         object Data { get; set; }
 
-        Task<T> Dispatch();
+        T Dispatch();
     }
 }

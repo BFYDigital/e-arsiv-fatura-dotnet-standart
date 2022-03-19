@@ -17,10 +17,10 @@ namespace BFY.Fatura.Commands
             _configuration = configuration;
         }
 
-        public virtual async Task<T> Dispatch()
+        public virtual T Dispatch()
         {
             IHttpServices<T> services = new HttpServices<T>(_configuration);
-            T response = await services.DispatchCommand(CommandName, PageName, Data);
+            T response = services.DispatchCommand(CommandName, PageName, Data);
 
             return response;
         }
