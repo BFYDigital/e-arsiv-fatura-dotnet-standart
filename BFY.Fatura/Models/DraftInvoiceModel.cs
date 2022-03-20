@@ -25,7 +25,7 @@ namespace BFY.Fatura.Models
         public string kapiNo { get; set; } = "";
         public string kasabaKoy { get; set; } = "";
         public string vergiDairesi { get; set; } = "";
-        public string ulke { get; set; } = "Türkiye";
+        public string ulke { get; set; } = Helpers.UnicodeHelper.TurkishCharFix("Türkiye");
         public string bulvarcaddesokak { get; set; } = "";
         public string mahalleSemtIlce { get; set; } = "";
         public string sehir { get; set; } = " ";

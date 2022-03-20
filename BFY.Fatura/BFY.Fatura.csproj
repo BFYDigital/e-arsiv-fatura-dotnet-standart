@@ -37,6 +37,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,6 +65,7 @@
     <Compile Include="Exceptions\EmptyTokenException.cs" />
     <Compile Include="Exceptions\FailedApiRequestException.cs" />
     <Compile Include="FaturaService.cs" />
+    <Compile Include="Helpers\UnicodeHelper.cs" />
     <Compile Include="Models\DraftInvoiceModel.cs" />
     <Compile Include="Models\DraftInvoiceResponseModel.cs" />
     <Compile Include="Models\enums.cs" />

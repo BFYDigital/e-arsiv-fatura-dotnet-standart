@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using BFY.Fatura.Models;
 using BFY.Fatura.Services;
 using BFY.Fatura.Commands;
+using System.Text;
+using System.Globalization;
 
 namespace BFY.Fatura
 {
@@ -40,20 +42,20 @@ namespace BFY.Fatura
         {
             var data = new DraftInvoiceModel()
             {
-                aliciAdi = invoiceDetails.name,
-                aliciSoyadi = invoiceDetails.surname,
-                aliciUnvan = invoiceDetails.title,
+                aliciAdi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.name),
+                aliciSoyadi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.surname),
+                aliciUnvan = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.title),
                 faturaTarihi = invoiceDetails.date,
                 saat = invoiceDetails.time,
                 vknTckn = invoiceDetails.taxIDOrTRID,
-                vergiDairesi = invoiceDetails.taxOffice,
+                vergiDairesi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.taxOffice),
                 matrah = invoiceDetails.grandTotal.ToString("F2").Replace(",", "."),
                 malhizmetToplamTutari = invoiceDetails.grandTotal.ToString("F2").Replace(",", "."),
                 hesaplanankdv = invoiceDetails.totalVAT.ToString("F2").Replace(",", "."),
                 vergilerToplami = invoiceDetails.totalVAT.ToString("F2").Replace(",", "."),
                 vergilerDahilToplamTutar = invoiceDetails.grandTotalInclVAT.ToString("F2").Replace(",", "."),
                 odenecekTutar = invoiceDetails.paymentTotal.ToString("F2").Replace(",", "."),
-                bulvarcaddesokak = invoiceDetails.fullAddress
+                bulvarcaddesokak = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.fullAddress)
             };
 
             for (int i = 0; i < invoiceDetails.items.Count; i++)
