@@ -42,20 +42,20 @@ namespace BFY.Fatura
         {
             var data = new DraftInvoiceModel()
             {
-                aliciAdi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.name),
-                aliciSoyadi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.surname),
-                aliciUnvan = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.title),
+                aliciAdi = invoiceDetails.name,
+                aliciSoyadi = invoiceDetails.surname,
+                aliciUnvan = invoiceDetails.title,
                 faturaTarihi = invoiceDetails.date,
                 saat = invoiceDetails.time,
                 vknTckn = invoiceDetails.taxIDOrTRID,
-                vergiDairesi = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.taxOffice),
+                vergiDairesi = invoiceDetails.taxOffice,
                 matrah = invoiceDetails.grandTotal.ToString("F2").Replace(",", "."),
                 malhizmetToplamTutari = invoiceDetails.grandTotal.ToString("F2").Replace(",", "."),
                 hesaplanankdv = invoiceDetails.totalVAT.ToString("F2").Replace(",", "."),
                 vergilerToplami = invoiceDetails.totalVAT.ToString("F2").Replace(",", "."),
                 vergilerDahilToplamTutar = invoiceDetails.grandTotalInclVAT.ToString("F2").Replace(",", "."),
                 odenecekTutar = invoiceDetails.paymentTotal.ToString("F2").Replace(",", "."),
-                bulvarcaddesokak = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetails.fullAddress)
+                bulvarcaddesokak = invoiceDetails.fullAddress
             };
 
             for (int i = 0; i < invoiceDetails.items.Count; i++)

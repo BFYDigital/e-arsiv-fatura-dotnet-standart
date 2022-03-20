@@ -5,6 +5,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BFY.Fatura.Services
@@ -108,31 +110,19 @@ namespace BFY.Fatura.Services
             if (string.IsNullOrEmpty(Configuration.Token))
                 throw new EmptyTokenException("token not provided");
 
-            using (HttpClient client = HttpClientFactory.Create())
+            using (HttpClient client = new HttpClient())
             {
                 string url = $"{Configuration.BaseUrl}/earsiv-services/dispatch";
-                string referrer = $"{Configuration.BaseUrl}/login.jsp";
 
-                var fields = new List<KeyValuePair<string, string>>
-                {
-                    // todo: make sure we do not need time based UUID
-                    new KeyValuePair<string, string>("callid", Guid.NewGuid().ToString()),
-                    new KeyValuePair<string, string>("token", Configuration.Token),
-                    new KeyValuePair<string, string>("cmd", command),
-                    new KeyValuePair<string, string>("pageName", pageName),
-                    new KeyValuePair<string, string>("jp", null)
-                };
-
-                if (data != null)
-                {
-                    var item = fields.RemoveAll(x => x.Key.CompareTo("jp") == 0);
-                    string serialized = JsonConvert.SerializeObject(data);
-                    serialized = (encodeUrl) ? System.Net.WebUtility.UrlEncode(serialized) : serialized;
-                    fields.Add(new KeyValuePair<string, string>("jp", serialized));
-                }
-
-                var postFields = new FormUrlEncodedContent(fields);
-                var response = client.PostAsync(url, postFields).GetAwaiter().GetResult();
+                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                string body = $"cmd={command}" +
+                    $"&callid={Guid.NewGuid().ToString()}" +
+                    $"&pageName={pageName}" +
+                    $"&token={Configuration.Token }" +
+                    $"&jp=" + System.Net.WebUtility.UrlEncode(JsonConvert.SerializeObject(data));
+                
+                request.Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded");
+                var response = client.SendAsync(request).GetAwaiter().GetResult();
                 var responseStr = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
                 return JsonConvert.DeserializeObject<T>(responseStr);

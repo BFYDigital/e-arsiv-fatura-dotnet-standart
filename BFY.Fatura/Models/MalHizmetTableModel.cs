@@ -26,7 +26,7 @@ namespace BFY.Fatura.Models
 
         public MalHizmetTableModel(InvoiceDetailsItemModel invoiceDetailsItem)
         {
-            malHizmet = Helpers.UnicodeHelper.TurkishCharFix(invoiceDetailsItem.name);
+            malHizmet = invoiceDetailsItem.name;
             miktar = invoiceDetailsItem.quantity;
             birimFiyat = decimal.Round(invoiceDetailsItem.unitPrice, 2).ToString().Replace(",",".");
             fiyat = decimal.Round(invoiceDetailsItem.price, 2).ToString();
