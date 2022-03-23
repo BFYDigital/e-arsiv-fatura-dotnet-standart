@@ -190,13 +190,28 @@ namespace BFY.Fatura
             return command.Dispatch();
         }
 
-        public GIBResponseModel<SMSCodeResponseModel> SendSignSMSCode(string phone)
+        public GIBResponseModel<SMSCodeResponseModel> SendSignSMSCode()
         {
-            var data = new { CEPTEL = phone, KCEPTEL = false, TIP = string.Empty };
-            var command = new SendSignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = data };
+            var dataTel = new { };
+            var command = new GetSignSMSCodeCommand<GIBResponseModel<SMSPhoneResponseModel>>(_configuration) { Data = dataTel };
+            GIBResponseModel<SMSPhoneResponseModel> responseTel = command.Dispatch();
 
-            GIBResponseModel<SMSCodeResponseModel> response = command.Dispatch();
-            return response;
+            if(!string.IsNullOrEmpty(responseTel.data.telefon))
+            {
+                var data = new { CEPTEL = responseTel.data.telefon, KCEPTEL = false, TIP = string.Empty };
+                var command2 = new SendSignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = data };
+
+                GIBResponseModel<SMSCodeResponseModel> response = command2.Dispatch();
+                return response;
+            } else
+            {
+                GIBResponseModel<SMSCodeResponseModel> response = new GIBResponseModel<SMSCodeResponseModel>()
+                {
+                    message = "Telefon numarası sistemden alınamadı.",
+                    status = false
+                };
+                return response;
+            }
         }
 
         public async Task<GIBResponseModel<SMSCodeResponseModel>> VerifySignSMSCode(Models.Sms.SMSCodeInputModel input)

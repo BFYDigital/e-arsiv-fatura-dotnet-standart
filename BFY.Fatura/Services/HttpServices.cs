@@ -114,18 +114,44 @@ namespace BFY.Fatura.Services
             {
                 string url = $"{Configuration.BaseUrl}/earsiv-services/dispatch";
 
-                HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
-                string body = $"cmd={command}" +
-                    $"&callid={Guid.NewGuid().ToString()}" +
-                    $"&pageName={pageName}" +
-                    $"&token={Configuration.Token }" +
-                    $"&jp=" + System.Net.WebUtility.UrlEncode(JsonConvert.SerializeObject(data));
+                if(encodeUrl)
+                {
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    string body = $"cmd={command}" +
+                        $"&callid={Guid.NewGuid().ToString()}" +
+                        $"&pageName={pageName}" +
+                        $"&token={Configuration.Token }" +
+                        $"&jp=" + (encodeUrl ? System.Net.WebUtility.UrlEncode(JsonConvert.SerializeObject(data)) : JsonConvert.SerializeObject(data));
                 
-                request.Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded");
-                var response = client.SendAsync(request).GetAwaiter().GetResult();
-                var responseStr = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    request.Content = new StringContent(body, Encoding.UTF8, "application/x-www-form-urlencoded");
+                    var response = client.SendAsync(request).GetAwaiter().GetResult();
+                    var responseStr = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
 
-                return JsonConvert.DeserializeObject<T>(responseStr);
+                    return JsonConvert.DeserializeObject<T>(responseStr);
+                } else
+                {
+                    var fields = new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("callid", Guid.NewGuid().ToString()),
+                        new KeyValuePair<string, string>("token", Configuration.Token),
+                        new KeyValuePair<string, string>("cmd", command),
+                        new KeyValuePair<string, string>("pageName", pageName),
+                        new KeyValuePair<string, string>("jp", null)
+                    };
+
+                    if (data != null)
+                    {
+                        var item = fields.RemoveAll(x => x.Key.CompareTo("jp") == 0);
+                        string serialized = JsonConvert.SerializeObject(data);
+                        fields.Add(new KeyValuePair<string, string>("jp", serialized));
+                    }
+
+                    var postFields = new FormUrlEncodedContent(fields);
+                    var response = client.PostAsync(url, postFields).GetAwaiter().GetResult();
+                    var responseStr = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+                    return JsonConvert.DeserializeObject<T>(responseStr);
+                }
             }
 
             throw new FailedApiRequestException("Komut gönderme işlemi tamamlanamıyor.");

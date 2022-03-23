@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BFY.Fatura", "BFY.Fatura\BFY.Fatura.csproj", "{8AD2B43E-50EA-474F-94F2-364243040165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BFY.Fatura.Test", "BFY.Fatura.Test\BFY.Fatura.Test.csproj", "{B64FC2C1-E725-42D0-8F07-287FE04D7718}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BFY.Fatura.Test", "BFY.Fatura.Test\BFY.Fatura.Test.csproj", "{B64FC2C1-E725-42D0-8F07-287FE04D7718}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{13BC1EE8-CEAA-4E45-A3F1-2EB2912482B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B64FC2C1-E725-42D0-8F07-287FE04D7718}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B64FC2C1-E725-42D0-8F07-287FE04D7718}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B64FC2C1-E725-42D0-8F07-287FE04D7718}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BC1EE8-CEAA-4E45-A3F1-2EB2912482B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BC1EE8-CEAA-4E45-A3F1-2EB2912482B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BC1EE8-CEAA-4E45-A3F1-2EB2912482B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BC1EE8-CEAA-4E45-A3F1-2EB2912482B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -54,6 +54,7 @@
     <Compile Include="Commands\GetUserDataCommand.cs" />
     <Compile Include="Commands\ICommandDispatcher.cs" />
     <Compile Include="Commands\InvoicesByDateRangeCommand.cs" />
+    <Compile Include="Commands\GetSignSMSCodeCommand.cs" />
     <Compile Include="Commands\SendSignSMSCodeCommand.cs" />
     <Compile Include="Commands\SignDraftInvoiceCommand.cs" />
     <Compile Include="Commands\UpdateUserDataCommand.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Models\MalHizmetTableModel.cs" />
     <Compile Include="Models\RecipientModel.cs" />
     <Compile Include="Models\Sms\SMSCodeInputModel.cs" />
+    <Compile Include="Models\Sms\SMSPhoneResponseModel.cs" />
     <Compile Include="Models\Sms\SMSCodeResponseModel.cs" />
     <Compile Include="Models\User\UserModel.cs" />
     <Compile Include="Models\User\UserModelDTO.cs" />

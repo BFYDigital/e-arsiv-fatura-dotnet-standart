@@ -20,7 +20,7 @@ namespace BFY.Fatura.Commands
         public virtual T Dispatch()
         {
             IHttpServices<T> services = new HttpServices<T>(_configuration);
-            T response = services.DispatchCommand(CommandName, PageName, Data);
+            T response = services.DispatchCommand(CommandName, PageName, Data, CommandName == "EARSIV_PORTAL_FATURA_OLUSTUR");
 
             return response;
         }
