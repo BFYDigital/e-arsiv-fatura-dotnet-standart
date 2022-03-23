@@ -214,11 +214,12 @@ namespace BFY.Fatura
             }
         }
 
-        public async Task<GIBResponseModel<SMSCodeResponseModel>> VerifySignSMSCode(Models.Sms.SMSCodeInputModel input)
+        public GIBResponseModel<SMSCodeResponseModel> VerifySignSMSCode(Models.Sms.SMSCodeInputModel input)
         {
             var command = new VerifySignSMSCodeCommand<GIBResponseModel<SMSCodeResponseModel>>(_configuration) { Data = input };
 
             GIBResponseModel<SMSCodeResponseModel> response = command.Dispatch();
+
             return response;
         }
 
