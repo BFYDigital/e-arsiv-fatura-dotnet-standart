@@ -154,6 +154,7 @@ namespace BFY.Fatura
 
             return new CreatedInvoiceModel()
             {
+                data = invoice,
                 uuid = draftInvoice.uuid,
                 signed = signInvoice
             };
